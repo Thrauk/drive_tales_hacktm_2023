@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "974619475396",
+    "project_id": "drive-tales",
+    "storage_bucket": "drive-tales.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:974619475396:android:f76e9fe449e2e5f600f891",
+        "android_client_info": {
+          "package_name": "com.drivetales.drive_tales"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "974619475396-odhk55noghlnta48gl8el2cd6cackv2v.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.drivetales.drive_tales",
+            "certificate_hash": "94727be86456f19f9d8f80015fa789c557b5657d"
+          }
+        },
+        {
+          "client_id": "974619475396-davm8ulsadiqneb7ian08kmrcdikcv29.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBA21O1fbEuWHUcMzbJfZgEpy-FZHGNe-U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "974619475396-davm8ulsadiqneb7ian08kmrcdikcv29.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
