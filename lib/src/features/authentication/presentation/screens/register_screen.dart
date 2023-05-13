@@ -1,23 +1,23 @@
 import 'package:drive_tales/src/design/dt_colors.dart';
 import 'package:drive_tales/src/design/dt_text_styles.dart';
 import 'package:drive_tales/src/features/authentication/presentation/bloc/auth_bloc.dart';
+import 'package:drive_tales/src/features/authentication/presentation/screens/login_screen.dart';
 import 'package:drive_tales/src/features/home/presentaiton/screens/home_screen.dart';
 import 'package:drive_tales/src/widgets/dt_button.dart';
 import 'package:drive_tales/src/widgets/dt_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'register_screen.dart';
-
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   late final TextEditingController _passwordController;
+  late final TextEditingController _usernameController;
   late final TextEditingController _emailController;
 
   @override
@@ -25,25 +25,26 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
+    _usernameController = TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      // resizeToAvoidBottomInset: false,
       backgroundColor: DTColors.navyBlue,
-      body: Padding(
-        padding: const EdgeInsets.only(top: 40, left: 35, right: 35),
-        child: BlocListener<AuthBloc, AuthState>(
-          listener: (context, state) {
-            if (state.isAuthenticated) {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => const HomeScreen(),
-                ),
-              );
-            }
-          },
+      body: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state.isAuthenticated) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const HomeScreen(),
+              ),
+            );
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(top: 40, left: 35, right: 35),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 26,
                 ),
                 Text(
-                  'Login',
+                  'Register',
                   style: DTTextStyles.h1,
                 ),
                 const SizedBox(
@@ -74,6 +75,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   hint: 'Email',
                   controller: _emailController,
                   prefixIcon: Icons.alternate_email,
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                DTTextField(
+                  hint: 'Username',
+                  controller: _usernameController,
+                  prefixIcon: Icons.account_circle_rounded,
                 ),
                 SizedBox(
                   height: 30,
@@ -91,13 +100,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 40,
                   width: double.infinity,
                   onPressed: () {
-                    BlocProvider.of<AuthBloc>(context).add(LogInWithEmailAndPass(
-                      email: _emailController.text,
-                      password: _passwordController.text,
-                    ));
+                    print(_emailController.text);
+                    print(_passwordController.text);
+                    BlocProvider.of<AuthBloc>(context).add(
+                      RegisterWithEmailAndPass(
+                        email: _emailController.text,
+                        password: _passwordController.text,
+                        username: _usernameController.text,
+                      ),
+                    );
                   },
                   child: Text(
-                    'Login',
+                    'Register',
                     style: DTTextStyles.regularBody(
                       color: DTColors.white,
                     ),
@@ -150,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   children: [
                     Text(
-                      'Don\'t have an account? ',
+                      'Already have an account? ',
                       style: DTTextStyles.regularBody(
                         fontSize: 12,
                         color: DTColors.lightGrey,
@@ -160,12 +174,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       onTap: () {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (context) => const RegisterScreen(),
+                            builder: (context) => const LoginScreen(),
                           ),
                         );
                       },
                       child: Text(
-                        'Sign up here.',
+                        'Login here.',
                         style: DTTextStyles.regularBody(
                           fontSize: 12,
                           color: DTColors.orange,
@@ -186,6 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _usernameController.dispose();
     super.dispose();
   }
 }

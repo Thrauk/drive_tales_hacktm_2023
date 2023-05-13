@@ -64,6 +64,7 @@ class _DTTextFieldState extends State<DTTextField> {
         ),
         Expanded(
           child: TextFormField(
+            controller: widget.controller,
             cursorColor: _cursorColor,
             focusNode: _node,
             onTapOutside: (event) {
