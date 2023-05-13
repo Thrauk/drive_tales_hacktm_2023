@@ -17,13 +17,17 @@ paths:
       summary: Generate a description for a location
       description: Generate a description for a location using the location using the chatgpt api
       operationId: updatePet
-      requestBody:
-        description: Update an existent pet in the store
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Location'
-        required: true
+      parameters:
+        - name: name
+          in: query
+          description: Name of the location
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: Description type (historical, geographical, etc.)
+          schema:
+            type: string
       responses:
         '200':
           description: Successful operation
