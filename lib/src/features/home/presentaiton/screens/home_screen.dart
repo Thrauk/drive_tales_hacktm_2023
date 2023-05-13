@@ -4,7 +4,6 @@ import 'package:drive_tales/src/features/authentication/presentation/bloc/auth_b
 import 'package:drive_tales/src/features/authentication/presentation/screens/login_screen.dart';
 import 'package:drive_tales/src/features/nearby_places/data/google_places_repository.dart';
 import 'package:drive_tales/src/widgets/dt_button.dart';
-import 'package:drive_tales/src/widgets/dt_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -76,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 LocationPermission permission;
                 permission = await Geolocator.requestPermission();
                 Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-                GooglePlacesRepository().getAttractionsNear(position.latitude.toString(), position.longitude.toString());
+                GooglePlacesRepository().getAttractionsNear(position.latitude, position.longitude);
               },
               child: Text(
                 'Places',

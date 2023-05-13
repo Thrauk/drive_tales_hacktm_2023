@@ -1,8 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:drive_tales/src/features/nearby_places/domain/nearby_place.dart';
+import 'package:drive_tales/src/utils/operations.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class GooglePlacesRepository {
   factory GooglePlacesRepository() => _singleton;
@@ -13,10 +14,8 @@ class GooglePlacesRepository {
 
   final String apiKey = 'AIzaSyDHEPkGprEaFiA43ffZaXwymaxqNab-Dfo';
 
-
-  Future<List<NearbyPlace>> getAttractionsNear(String lat, String long) async {
-    const String baseUrl =
-        'maps.googleapis.com';
+  Future<List<NearbyPlace>> getAttractionsNear(double lat, double long) async {
+    const String baseUrl = 'maps.googleapis.com';
 
     final queryParameters = <String, dynamic>{
       'location': '$lat,$long',
@@ -26,29 +25,39 @@ class GooglePlacesRepository {
     }..removeWhere((key, value) => value == null);
     final uri = Uri.https(baseUrl, '/maps/api/place/nearbysearch/json', queryParameters);
     print(uri);
-
     final response = await http.get(uri, headers: {
       HttpHeaders.contentTypeHeader: 'application/json',
     });
     final body = jsonDecode(response.body) as Map<String, dynamic>;
-    print(body);
     final nextPageToken = body['next_page_token'];
     final returnedList = NearbyPlace.fromList(body['results'] as List);
+
+    final returnedListTemp = NearbyPlace.fromList(body['results'] as List);
+
     returnedList.removeWhere((element) {
       final bannedTypes = ['casino', 'lodging'];
-      for(final type in bannedTypes) {
-        if(element.types.contains(type)) {
+      for (final type in bannedTypes) {
+        if (element.types.contains(type)) {
           return true;
         }
       }
+      if (element.permanentlyClosed ||
+          calculateDistance(lat, long, element.geometry.location.lat, element.geometry.location.lng) > 200) {
+        return true;
+      }
+
       return false;
     });
-    for(final element in returnedList) {
+    print('Found ${returnedList.length} places');
+    if (returnedList.isEmpty && returnedListTemp.isNotEmpty) {
+      print(
+          'Closest attraction is: ${returnedListTemp[0].name} at ${calculateDistance(lat, long, returnedListTemp[0].geometry.location.lat, returnedListTemp[0].geometry.location.lng)} meters');
+      print('In vicinity of ${returnedListTemp[0].vicinity}');
+    }
+    for (final element in returnedList) {
+      print('${element.permanentlyClosed}');
       print('${element.name} in vicinity of ${element.vicinity} with types: ${element.types}');
-      print(element.);
     }
     return returnedList;
-
   }
-
 }
