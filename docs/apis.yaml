@@ -1,0 +1,61 @@
+openapi: 3.0.3
+info:
+  title: Drive Tales Backend APIs
+  description: |-
+    Description here
+  version: 0.0.1
+servers:
+  - url: /api/v1
+tags:
+  - name: location
+    description: Location Description
+paths:
+  /description:
+    get:
+      tags:
+        - location
+      summary: Generate a description for a location
+      description: Generate a description for a location using the location using the chatgpt api
+      operationId: updatePet
+      requestBody:
+        description: Update an existent pet in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Location'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Description'
+components:
+  schemas:
+    Description:
+      required:
+        - description
+      properties:
+        description:
+          type: string
+          example: 'The Golden Gate Bridge is a suspension bridge spanning the Golden Gate, the one-mile-wide strait connecting San Francisco Bay and the Pacific Ocean.'
+    Location:
+      required:
+        - name
+        - descriptionType
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'The Golden Gate Bridge'
+        descriptionType:
+          type: string
+          example: 'historical'
+  requestBodies:
+    Location:
+      description: The data related to a location that needs to be processed in order to generate a description
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Location'
