@@ -4,6 +4,8 @@ import 'package:drive_tales/src/widgets/dt_button.dart';
 import 'package:drive_tales/src/widgets/dt_text_field.dart';
 import 'package:flutter/material.dart';
 
+import 'signup_screen.dart';
+
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
@@ -123,7 +125,11 @@ class LoginScreen extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () {
-
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const RegisterScreen(),
+                        ),
+                      );
                     },
                     child: Text(
                       'Sign up here.',
