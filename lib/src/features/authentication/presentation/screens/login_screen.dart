@@ -1,3 +1,7 @@
+import 'package:drive_tales/src/design/dt_colors.dart';
+import 'package:drive_tales/src/design/dt_text_styles.dart';
+import 'package:drive_tales/src/widgets/dt_button.dart';
+import 'package:drive_tales/src/widgets/dt_text_field.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -7,8 +11,10 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: DTColors.navyBlue,
         body: Padding(
-          padding: EdgeInsets.only(top: 60, left: 16, right: 16),
+          padding: const EdgeInsets.only(top: 40, left: 35, right: 35),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -18,64 +24,117 @@ class LoginScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: 70,
-                      child: Image.asset('assets/logo.png'),
-                    ),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Text(
-                      'Drive',
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                    ),
-                    Text(
-                      'Tales',
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
+                      width: 240,
+                      child: Image.asset('assets/logo_clean.png'),
                     ),
                   ],
                 ),
               ),
               SizedBox(
-                height: 18,
+                height: 26,
               ),
               Text(
                 'Login',
-                style: TextStyle(
-                  fontSize: 24,
-                  color: Color(0xffEFC74A),
-                ),
+                style: DTTextStyles.h1,
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              DTTextField(
+                hint: 'Username',
+                controller: TextEditingController(),
+                prefixIcon: Icons.alternate_email,
               ),
               SizedBox(
-                height: 60,
+                height: 30,
+              ),
+              DTTextField(
+                hint: 'Password',
+                obscureText: true,
+                controller: TextEditingController(),
+                prefixIcon: Icons.key,
+              ),
+              SizedBox(
+                height: 40,
+              ),
+              DTButton(
+                height: 40,
+                width: double.infinity,
+                onPressed: () {},
+                child: Text(
+                  'Login',
+                  style: DTTextStyles.regularBody(
+                    color: DTColors.white,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Row(
+                  children: [
+                    const Expanded(
+                      child: Divider(
+                        color: DTColors.lightGrey,
+                        thickness: 1,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        'OR',
+                        style: DTTextStyles.regularBody(
+                          fontSize: 12,
+                          color: DTColors.white,
+                        ),
+                      ),
+                    ),
+                    const Expanded(
+                      child: Divider(
+                        color: DTColors.lightGrey,
+                        thickness: 1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: DTButton(
+                  height: 40,
+                  backgroundColor: DTColors.white,
+                  width: double.infinity,
+                  onPressed: () {},
+                  child: Text(
+                    'Connect with google',
+                    style: DTTextStyles.regularBody(
+                      color: DTColors.navyBlue,
+                    ),
+                  ),
+                ),
               ),
               Row(
                 children: [
-                  Icon(Icons.alternate_email),
-                  SizedBox(width: 6,),
-                  Expanded(
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        hintText: 'Username',
+                  Text(
+                    'Don\'t have an account? ',
+                    style: DTTextStyles.regularBody(
+                      fontSize: 12,
+                      color: DTColors.lightGrey,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+
+                    },
+                    child: Text(
+                      'Sign up here.',
+                      style: DTTextStyles.regularBody(
+                        fontSize: 12,
+                        color: DTColors.orange,
                       ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(
-                height: 12,
-              ),
-              TextFormField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Password',
-                ),
-              ),
-              ElevatedButton(onPressed: () {}, child: Text('Log in')),
-              Text('Don\'t have an account? Register here'),
             ],
           ),
         ),
