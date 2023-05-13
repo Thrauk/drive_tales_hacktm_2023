@@ -91,10 +91,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 40,
                   width: double.infinity,
                   onPressed: () {
-                    BlocProvider.of<AuthBloc>(context).add(LogInWithEmailAndPass(
-                      email: _emailController.text,
-                      password: _passwordController.text,
-                    ));
+                    BlocProvider.of<AuthBloc>(context).add(
+                      LogInWithEmailAndPass(
+                        email: _emailController.text,
+                        password: _passwordController.text,
+                      ),
+                    );
                   },
                   child: Text(
                     'Login',
@@ -138,7 +140,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 40,
                     backgroundColor: DTColors.white,
                     width: double.infinity,
-                    onPressed: () {},
+                    onPressed: () {
+                      BlocProvider.of<AuthBloc>(context).add(
+                        AuthenticateWithGoogle(),
+                      );
+                    },
                     child: Text(
                       'Connect with google',
                       style: DTTextStyles.regularBody(

@@ -1,6 +1,7 @@
 import 'package:drive_tales/src/features/authentication/domain/auth_user_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthRepository {
   factory AuthRepository() => _singleton;
@@ -38,6 +39,31 @@ class AuthRepository {
     }
     return null;
   }
+
+  Future<AuthUserData?> signInWithGoogle() async {
+    try{
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      // Once signed in, return the UserCredential
+      final signInData = await FirebaseAuth.instance.signInWithCredential(credential);
+      return signInData.user!.toUser;
+    } catch(_) {
+      print('Google auth error $_');
+    }
+    return null;
+
+  }
+
 
   Future<AuthUserData?> loginWithEmailAndPassword({
     required String emailAddress,

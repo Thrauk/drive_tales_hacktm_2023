@@ -36,6 +36,10 @@ class RegisterWithEmailAndPass extends AuthEvent {
   final String username;
 }
 
+class AuthenticateWithGoogle extends AuthEvent {
+
+}
+
 class LogOut extends AuthEvent {
   LogOut(this.callback);
   final VoidCallback callback;

@@ -152,7 +152,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     height: 40,
                     backgroundColor: DTColors.white,
                     width: double.infinity,
-                    onPressed: () {},
+                    onPressed: () {
+                      BlocProvider.of<AuthBloc>(context).add(
+                        AuthenticateWithGoogle(),
+                      );
+                    },
                     child: Text(
                       'Connect with google',
                       style: DTTextStyles.regularBody(
