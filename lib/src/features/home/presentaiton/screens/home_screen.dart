@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:audioplayers/audioplayers.dart';
+import 'package:drive_tales/src/features/map/data/description_repository.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -17,6 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
   LatLng currentLocation = const LatLng(0, 0);
   StreamSubscription<Position>? positionStream;
   String? _mapStyle;
+  DescriptionRepository descriptionRepository = DescriptionRepository();
+  AudioPlayer? audioPlayer;
 
   @override
   void initState() {
@@ -63,6 +67,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(onPressed: () {
+        audioPlayer = AudioPlayer();
+        //   descriptionRepository.play(
+        //       audioPlayer: audioPlayer!, name: "Empire State Building", type: DescriptionType.historical);
+        // },
+        descriptionRepository.stop(audioPlayer: AudioPlayer());
+      }),
       body: currentLocation == const LatLng(0, 0)
           ? const Center(child: CircularProgressIndicator())
           : SizedBox(
