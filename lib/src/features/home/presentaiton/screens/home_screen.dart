@@ -2,10 +2,12 @@ import 'package:drive_tales/src/design/dt_colors.dart';
 import 'package:drive_tales/src/design/dt_text_styles.dart';
 import 'package:drive_tales/src/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:drive_tales/src/features/authentication/presentation/screens/login_screen.dart';
+import 'package:drive_tales/src/features/nearby_places/data/google_places_repository.dart';
 import 'package:drive_tales/src/widgets/dt_button.dart';
 import 'package:drive_tales/src/widgets/dt_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -62,6 +64,22 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               child: Text(
                 'Log out',
+                style: DTTextStyles.regularBody(
+                  color: DTColors.white,
+                ),
+              ),
+            ),
+            DTButton(
+              height: 40,
+              width: double.infinity,
+              onPressed: () async {
+                LocationPermission permission;
+                permission = await Geolocator.requestPermission();
+                Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+                GooglePlacesRepository().getAttractionsNear(position.latitude.toString(), position.longitude.toString());
+              },
+              child: Text(
+                'Places',
                 style: DTTextStyles.regularBody(
                   color: DTColors.white,
                 ),
