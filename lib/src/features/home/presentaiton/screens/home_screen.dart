@@ -1,11 +1,8 @@
-import 'package:drive_tales/src/design/dt_colors.dart';
-import 'package:drive_tales/src/design/dt_text_styles.dart';
-import 'package:drive_tales/src/features/authentication/presentation/bloc/auth_bloc.dart';
-import 'package:drive_tales/src/features/authentication/presentation/screens/login_screen.dart';
-import 'package:drive_tales/src/widgets/dt_button.dart';
-import 'package:drive_tales/src/widgets/dt_text_field.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,66 +12,61 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  GoogleMapController? mapController;
+  LatLng currentLocation = const LatLng(0, 0);
+  StreamSubscription<Position>? positionStream;
+
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: DTColors.navyBlue,
-      body: Padding(
-        padding: const EdgeInsets.only(top: 40, left: 35, right: 35),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Center(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: 240,
-                    child: Image.asset('assets/logo_clean.png'),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 26,
-            ),
-            Text(
-              'Home',
-              style: DTTextStyles.h1,
-            ),
-            DTButton(
-              height: 40,
-              width: double.infinity,
-              onPressed: () {
-                BlocProvider.of<AuthBloc>(context).add(
-                  LogOut(
-                    () {
-                      Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(
-                            builder: (context) => const LoginScreen(),
-                          ),
-                          (route) => false);
-                    },
-                  ),
-                );
-              },
-              child: Text(
-                'Log out',
-                style: DTTextStyles.regularBody(
-                  color: DTColors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  void initState() {
+    super.initState();
+    getLocation();
+  }
+
+  void getLocation() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) {
+      // Handle the case when location permission is denied
+    } else if (permission == LocationPermission.deniedForever) {
+      // Handle the case when location permission is denied forever
+    } else {
+      positionStream = Geolocator.getPositionStream(
+          locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10,
+      )).listen((Position position) {
+        setState(() {
+          currentLocation = LatLng(position.latitude, position.longitude);
+        });
+      });
+    }
   }
 
   @override
   void dispose() {
+    positionStream?.cancel();
     super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: GoogleMap(
+        initialCameraPosition: CameraPosition(
+          target: currentLocation,
+          zoom: 14.0,
+        ),
+        onMapCreated: (GoogleMapController controller) {
+          setState(() {
+            mapController = controller;
+          });
+        },
+        markers: <Marker>{
+          Marker(
+            markerId: const MarkerId('currentLocation'),
+            position: currentLocation,
+          ),
+        },
+      ),
+    );
   }
 }

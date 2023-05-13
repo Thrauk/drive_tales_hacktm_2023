@@ -10,7 +10,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-
   runApp(BlocProvider<AuthBloc>(
     create: (context) => AuthBloc(),
     child: const MyApp(),
@@ -24,16 +23,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Builder(
-        builder: (context) {
-          final bloc = BlocProvider.of<AuthBloc>(context);
-          if(bloc.state.isAuthenticated) {
-            return HomeScreen();
-          } else {
-            return LoginScreen();
-          }
+      home: Builder(builder: (context) {
+        final bloc = BlocProvider.of<AuthBloc>(context);
+        if (!bloc.state.isAuthenticated) {
+          return HomeScreen();
+        } else {
+          return LoginScreen();
         }
-      ),
+      }),
     );
   }
 }
