@@ -24,6 +24,8 @@ dependencies:
   google_fonts: ^4.0.4
   cloud_firestore: ^4.7.0
   google_sign_in: ^6.1.0
+  google_maps_flutter: ^2.2.6
+  geolocator: ^9.0.2
 
 dev_dependencies:
   flutter_test:
@@ -46,3 +48,4 @@ flutter:
     - assets/logo.png
     - assets/logo_dark.png
     - assets/logo_clean.png
+    - assets/map_style.txt
