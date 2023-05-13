@@ -73,3 +73,17 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:32.0.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
 }
+
+// def flutterProjectRoot = rootProject.projectDir.parentFile.toPath()
+
+// def propertiesFile = flutterProjectRoot.resolve("keys.properties")
+// def properties = new Properties()
+// properties.load(new FileInputStream(propertiesFile))
+
+// android {
+//     defaultConfig {
+//         manifestPlaceholders = [
+//             googleMapsApiKey: properties.getProperty('GOOGLE_MAPS_API_KEY')
+//         ]
+//     }
+// }

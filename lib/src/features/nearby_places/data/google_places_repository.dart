@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:drive_tales/src/features/nearby_places/domain/nearby_place.dart';
-import 'package:drive_tales/src/utils/operations.dart';
+import 'package:drive_tales/src/features/storage/data/user_storage_repository.dart';
 import 'package:http/http.dart' as http;
 
 class GooglePlacesRepository {
@@ -14,7 +15,7 @@ class GooglePlacesRepository {
 
   final String apiKey = 'AIzaSyDHEPkGprEaFiA43ffZaXwymaxqNab-Dfo';
 
-  Future<List<NearbyPlace>> getAttractionsNear(double lat, double long) async {
+  Future<List<NearbyPlace>> getAttractionsNear(double lat, double long, String userId) async {
     const String baseUrl = 'maps.googleapis.com';
 
     final queryParameters = <String, dynamic>{
@@ -32,7 +33,12 @@ class GooglePlacesRepository {
     final nextPageToken = body['next_page_token'];
     final returnedList = NearbyPlace.fromList(body['results'] as List);
 
-    final returnedListTemp = NearbyPlace.fromList(body['results'] as List);
+    // final returnedListTemp = NearbyPlace.fromList(body['results'] as List);
+
+    final visitedPlaces = await UserStorageRepository().getVisitedPlaces(authId: userId);
+    for (final place in visitedPlaces) {
+      print('Visited: ${place.placeName}');
+    }
 
     returnedList.removeWhere((element) {
       final bannedTypes = ['casino', 'lodging'];
@@ -41,23 +47,28 @@ class GooglePlacesRepository {
           return true;
         }
       }
-      if (element.permanentlyClosed ||
-          calculateDistance(lat, long, element.geometry.location.lat, element.geometry.location.lng) > 200) {
+      if (visitedPlaces.firstWhereOrNull(
+            (place) => place.placeId == element.placeId,
+          ) !=
+          null) {
+        return true;
+      }
+      if (element.permanentlyClosed) {
         return true;
       }
 
       return false;
     });
-    print('Found ${returnedList.length} places');
-    if (returnedList.isEmpty && returnedListTemp.isNotEmpty) {
-      print(
-          'Closest attraction is: ${returnedListTemp[0].name} at ${calculateDistance(lat, long, returnedListTemp[0].geometry.location.lat, returnedListTemp[0].geometry.location.lng)} meters');
-      print('In vicinity of ${returnedListTemp[0].vicinity}');
-    }
-    for (final element in returnedList) {
-      print('${element.permanentlyClosed}');
-      print('${element.name} in vicinity of ${element.vicinity} with types: ${element.types}');
-    }
+    // print('Found ${returnedList.length} places');
+    // if (returnedList.isEmpty && returnedListTemp.isNotEmpty) {
+    //   print(
+    //       'Closest attraction is: ${returnedListTemp[0].name} at ${calculateDistance(lat, long, returnedListTemp[0].geometry.location.lat, returnedListTemp[0].geometry.location.lng)} meters');
+    //   print('In vicinity of ${returnedListTemp[0].vicinity}');
+    // }
+    // for (final element in returnedList) {
+    //   print('${element.permanentlyClosed}');
+    //   print('${element.name} in vicinity of ${element.vicinity} with types: ${element.types}');
+    // }
     return returnedList;
   }
 }
