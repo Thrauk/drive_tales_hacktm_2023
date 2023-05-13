@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -15,11 +16,15 @@ class _HomeScreenState extends State<HomeScreen> {
   GoogleMapController? mapController;
   LatLng currentLocation = const LatLng(0, 0);
   StreamSubscription<Position>? positionStream;
+  String? _mapStyle;
 
   @override
   void initState() {
     super.initState();
     getLocation();
+    rootBundle.loadString('assets/map_style.txt').then((string) {
+      _mapStyle = string;
+    });
   }
 
   void getLocation() async {
@@ -36,6 +41,9 @@ class _HomeScreenState extends State<HomeScreen> {
       )).listen((Position position) {
         setState(() {
           currentLocation = LatLng(position.latitude, position.longitude);
+          if (mapController != null) {
+            mapController!.animateCamera(CameraUpdate.newLatLngZoom(currentLocation, 15));
+          }
         });
       });
     }
@@ -47,26 +55,39 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+    controller.setMapStyle(_mapStyle);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GoogleMap(
-        initialCameraPosition: CameraPosition(
-          target: currentLocation,
-          zoom: 14.0,
-        ),
-        onMapCreated: (GoogleMapController controller) {
-          setState(() {
-            mapController = controller;
-          });
-        },
-        markers: <Marker>{
-          Marker(
-            markerId: const MarkerId('currentLocation'),
-            position: currentLocation,
-          ),
-        },
-      ),
+      body: currentLocation == const LatLng(0, 0)
+          ? const Center(child: CircularProgressIndicator())
+          : SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: GoogleMap(
+                myLocationButtonEnabled: false,
+                zoomControlsEnabled: false,
+                mapToolbarEnabled: false,
+                scrollGesturesEnabled: false,
+                rotateGesturesEnabled: false,
+                tiltGesturesEnabled: false,
+                initialCameraPosition: CameraPosition(
+                  target: currentLocation,
+                  zoom: 15.0,
+                ),
+                onMapCreated: _onMapCreated,
+                markers: <Marker>{
+                  Marker(
+                    markerId: const MarkerId('currentLocation'),
+                    position: currentLocation,
+                  ),
+                },
+              ),
+            ),
     );
   }
 }

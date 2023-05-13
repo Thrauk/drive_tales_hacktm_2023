@@ -48,3 +48,4 @@ flutter:
     - assets/logo.png
     - assets/logo_dark.png
     - assets/logo_clean.png
+    - assets/map_style.txt
