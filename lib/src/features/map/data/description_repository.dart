@@ -13,6 +13,7 @@ enum DescriptionType {
   _,
 }
 
+
 extension DescriptionTypeExtension on DescriptionType {
   String get value {
     switch (this) {
@@ -51,7 +52,13 @@ class DescriptionRepository {
     };
 
     final Uri uri = Uri.http(_serverPath, '/api/v1/describe', queryParameters);
-    final response = await http.post(uri);
+
+    var response = await http.post(uri);
+
+
+    while(response.statusCode != 200) {
+      response = await http.post(uri);
+    }
     if (response.body.isEmpty) {
       // Invalid response
       return '';
@@ -62,6 +69,7 @@ class DescriptionRepository {
       return '';
     }
     final String uuid = responseJson['uuid'] as String;
+    print(uuid);
     return uuid;
   }
 

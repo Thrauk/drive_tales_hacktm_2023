@@ -40,6 +40,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool placeInProgress = false;
 
+  double? currentPlaceDistance;
+
   DescriptionRepository descriptionRepository = DescriptionRepository();
   AudioPlayer? audioPlayer;
 
@@ -66,17 +68,47 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {
             selectedNearbyPlace = places[0];
             sessionVisited.add(selectedNearbyPlace!);
+            currentPlaceDistance = calculateDistance(currentLocation.latitude, currentLocation.longitude, selectedNearbyPlace!.geometry.location.lat, selectedNearbyPlace!.geometry.location.lng) / 1000;
           });
+          try{
+            audioPlayer = AudioPlayer();
+            await descriptionRepository.play(
+                audioPlayer: audioPlayer!,
+                name: '${selectedNearbyPlace!.name}, ${selectedNearbyPlace!.vicinity}',
+                type: DescriptionType.none);
+          } catch(_) {
+            print('Audio player error');
+          }
 
           if (audioPlayer != null) {
             audioPlayer!.stop();
           }
-          audioPlayer = AudioPlayer();
-          await descriptionRepository.play(
+
+          audioPlayer?.onPlayerComplete.listen((event) async {
+            setState(() {
+              selectedNearbyPlace = null;
+              currentPlaceDistance = null;
+            });
+            placeInProgress = false;
+            await Future.delayed(const Duration(seconds: 15));
+          });
+
+          try {
+            await descriptionRepository.play(
               audioPlayer: audioPlayer!,
               name: '${selectedNearbyPlace!.name}, ${selectedNearbyPlace!.vicinity}',
-              type: DescriptionType.none);
+              type: DescriptionType.none,
+            );
+          } catch (_) {
+            print(_);
+          }
+
+
+
           await UserStorageRepository().addVisitedPlace(authId: userId, place: selectedNearbyPlace!);
+
+
+          // await UserStorageRepository().addVisitedPlace(authId: userId, place: selectedNearbyPlace!);
         }
 
         await Future.delayed(const Duration(seconds: 15));
@@ -120,6 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
     positionStream?.cancel();
     _attractionStreamSubscription.cancel();
     _attractionStreamController.close();
+    mapController?.dispose();
     super.dispose();
   }
 
@@ -297,7 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Center(
                         child: Text(
                           selectedNearbyPlace != null
-                              ? 'Now playing: ${selectedNearbyPlace!.name}'
+                              ? 'Now playing: ${selectedNearbyPlace!.name} at ${currentPlaceDistance!.toStringAsPrecision(2)} km'
                               : 'Searching for attractions...',
                         ),
                       ),

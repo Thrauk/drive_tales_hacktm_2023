@@ -13,7 +13,7 @@ class GooglePlacesRepository {
 
   static final GooglePlacesRepository _singleton = GooglePlacesRepository._internal();
 
-  final String apiKey = 'AIzaSyDHEPkGprEaFiA43ffZaXwymaxqNab-Dfo';
+  final String apiKey = 'AIzaSyBbzfvN3nL60lXMDhzCgn_X9qrGvwdWoMM';
 
   Future<List<NearbyPlace>> getAttractionsNear(double lat, double long, String userId) async {
     const String baseUrl = 'maps.googleapis.com';
@@ -22,7 +22,7 @@ class GooglePlacesRepository {
       'location': '$lat,$long',
       'type': 'tourist_attraction',
       'rankby': 'distance',
-      'key': 'AIzaSyDHEPkGprEaFiA43ffZaXwymaxqNab-Dfo',
+      'key': 'AIzaSyBbzfvN3nL60lXMDhzCgn_X9qrGvwdWoMM',
     }..removeWhere((key, value) => value == null);
     final uri = Uri.https(baseUrl, '/maps/api/place/nearbysearch/json', queryParameters);
     print(uri);
