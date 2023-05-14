@@ -1,6 +1,5 @@
 import 'package:drive_tales/src/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:drive_tales/src/features/authentication/presentation/screens/login_screen.dart';
-import 'package:drive_tales/src/features/authentication/presentation/screens/register_screen.dart';
 import 'package:drive_tales/src/features/home/presentaiton/screens/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +24,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Builder(builder: (context) {
         final bloc = BlocProvider.of<AuthBloc>(context);
-        if (!bloc.state.isAuthenticated) {
+        if (bloc.state.isAuthenticated) {
           return HomeScreen();
         } else {
           return LoginScreen();

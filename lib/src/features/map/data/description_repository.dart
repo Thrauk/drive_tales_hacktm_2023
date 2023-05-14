@@ -1,10 +1,17 @@
 import 'dart:convert';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:http/http.dart' as http;
 import 'package:drive_tales/src/config.dart';
+import 'package:http/http.dart' as http;
 
-enum DescriptionType { factual, historical, financial, geographic, _ }
+enum DescriptionType {
+  factual,
+  historical,
+  financial,
+  geographic,
+  none,
+  _,
+}
 
 extension DescriptionTypeExtension on DescriptionType {
   String get value {
@@ -17,6 +24,7 @@ extension DescriptionTypeExtension on DescriptionType {
         return 'financial';
       case DescriptionType.geographic:
         return 'geographic';
+      case DescriptionType.none:
       case DescriptionType._:
         return '';
     }
