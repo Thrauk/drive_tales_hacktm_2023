@@ -72,18 +72,20 @@ class _HomeScreenState extends State<HomeScreen> {
             audioPlayer!.stop();
           }
           audioPlayer = AudioPlayer();
+          audioPlayer?.onPlayerComplete.listen((event) async {
+            setState(() {
+              selectedNearbyPlace = null;
+            });
+            placeInProgress = false;
+            await Future.delayed(const Duration(seconds: 15));
+          });
           await descriptionRepository.play(
-              audioPlayer: audioPlayer!,
-              name: '${selectedNearbyPlace!.name}, ${selectedNearbyPlace!.vicinity}',
-              type: DescriptionType.none);
+            audioPlayer: audioPlayer!,
+            name: '${selectedNearbyPlace!.name}, ${selectedNearbyPlace!.vicinity}',
+            type: DescriptionType.none,
+          );
           await UserStorageRepository().addVisitedPlace(authId: userId, place: selectedNearbyPlace!);
         }
-
-        await Future.delayed(const Duration(seconds: 15));
-        setState(() {
-          selectedNearbyPlace = null;
-        });
-        placeInProgress = false;
       }
     });
     getLocation();
