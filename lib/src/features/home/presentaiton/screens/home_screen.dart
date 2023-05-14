@@ -71,6 +71,9 @@ class _HomeScreenState extends State<HomeScreen> {
             currentPlaceDistance = calculateDistance(currentLocation.latitude, currentLocation.longitude, selectedNearbyPlace!.geometry.location.lat, selectedNearbyPlace!.geometry.location.lng) / 1000;
           });
           try{
+            if (audioPlayer != null) {
+              audioPlayer!.stop();
+            }
             audioPlayer = AudioPlayer();
             await descriptionRepository.play(
                 audioPlayer: audioPlayer!,
@@ -80,33 +83,21 @@ class _HomeScreenState extends State<HomeScreen> {
             print('Audio player error');
           }
 
-          if (audioPlayer != null) {
-            audioPlayer!.stop();
-          }
-
-          audioPlayer?.onPlayerComplete.listen((event) async {
-            setState(() {
-              selectedNearbyPlace = null;
-              currentPlaceDistance = null;
-            });
-            placeInProgress = false;
-            await Future.delayed(const Duration(seconds: 15));
-          });
-
-          try {
-            await descriptionRepository.play(
-              audioPlayer: audioPlayer!,
-              name: '${selectedNearbyPlace!.name}, ${selectedNearbyPlace!.vicinity}',
-              type: DescriptionType.none,
-            );
-          } catch (_) {
-            print(_);
-          }
 
 
-
+          // await descriptionRepository.play(
+          //   audioPlayer: audioPlayer!,
+          //   name: '${selectedNearbyPlace!.name}, ${selectedNearbyPlace!.vicinity}',
+          //   type: DescriptionType.none,
+          // );
           await UserStorageRepository().addVisitedPlace(authId: userId, place: selectedNearbyPlace!);
+          await Future.delayed(const Duration(seconds: 15));
 
+          setState(() {
+            selectedNearbyPlace = null;
+            currentPlaceDistance = null;
+          });
+          placeInProgress = false;
 
           // await UserStorageRepository().addVisitedPlace(authId: userId, place: selectedNearbyPlace!);
         }
