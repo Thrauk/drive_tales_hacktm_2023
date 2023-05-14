@@ -68,11 +68,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(onPressed: () {
+        if (audioPlayer != null) {
+          audioPlayer!.stop();
+        }
         audioPlayer = AudioPlayer();
-        //   descriptionRepository.play(
-        //       audioPlayer: audioPlayer!, name: "Empire State Building", type: DescriptionType.historical);
-        // },
-        descriptionRepository.stop(audioPlayer: AudioPlayer());
+        descriptionRepository.play(
+            audioPlayer: audioPlayer!, name: "Podul de Fier din Lugoj", type: DescriptionType.historical);
       }),
       body: currentLocation == const LatLng(0, 0)
           ? const Center(child: CircularProgressIndicator())

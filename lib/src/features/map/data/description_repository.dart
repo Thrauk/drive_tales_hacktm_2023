@@ -46,7 +46,6 @@ class DescriptionRepository {
     };
 
     final Uri uri = Uri.http(_serverPath, '/api/v1/describe', queryParameters);
-    print('Sending post request to ${uri.toString()}');
     final response = await http.post(uri);
     if (response.body.isEmpty) {
       // Invalid response
@@ -58,7 +57,6 @@ class DescriptionRepository {
       return '';
     }
     final String uuid = responseJson['uuid'] as String;
-    print("uuid: $uuid");
     return uuid;
   }
 
@@ -70,8 +68,6 @@ class DescriptionRepository {
     final String uuid = await _postDescriptionRequest(name: name, type: type);
 
     final Uri uri = Uri.http(_serverPath, '/api/v1/audio/$uuid');
-    // await audioPlayer.setUrl(uri.toString());
-    // await audioPlayer.play();
     await audioPlayer.play(UrlSource(uri.toString()));
   }
 
