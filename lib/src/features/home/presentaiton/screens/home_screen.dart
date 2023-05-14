@@ -8,7 +8,6 @@ import 'package:drive_tales/src/features/nearby_places/data/google_places_reposi
 import 'package:drive_tales/src/features/nearby_places/domain/nearby_place.dart';
 import 'package:drive_tales/src/features/storage/data/user_storage_repository.dart';
 import 'package:drive_tales/src/utils/operations.dart';
-import 'package:drive_tales/src/widgets/dt_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,7 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     userId = BlocProvider.of<AuthBloc>(context).state.authUserData.id;
-
     _attractionStreamController = StreamController<Position>();
     _attractionStreamSubscription = _attractionStreamController.stream.listen((event) async {
       if (placeInProgress == false) {
@@ -119,6 +117,87 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: DTColors.navyBlue.withOpacity(0.8),
+        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        title: Text(
+          'Home',
+          style: DTTextStyles.regularBody(fontSize: 25),
+        ),
+        foregroundColor: DTColors.orange,
+      ),
+      drawer: Drawer(
+        backgroundColor: DTColors.navyBlue,
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.only(top: 45),
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'Hello, Bilbo',
+                style: DTTextStyles.regularBody(fontSize: 18),
+              ),
+            ),
+            SizedBox(
+              height: 14,
+            ),
+            ListTile(
+              title: Text(
+                'Home',
+                style: DTTextStyles.regularBody(),
+              ),
+              onTap: () {},
+            ),
+            ListTile(
+              title: Text(
+                'Profile',
+                style: DTTextStyles.regularBody(
+                  color: DTColors.lightGrey,
+                ),
+              ),
+              onTap: () {},
+            ),
+            ListTile(
+              title: Text(
+                'Recently viewed locations',
+                style: DTTextStyles.regularBody(
+                  color: DTColors.lightGrey,
+                ),
+              ),
+              onTap: () {},
+            ),
+            ListTile(
+              title: Text(
+                'Preferences',
+                style: DTTextStyles.regularBody(
+                  color: DTColors.lightGrey,
+                ),
+              ),
+              onTap: () {},
+            ),
+            ListTile(
+              title: Text(
+                'Log out',
+                style: DTTextStyles.regularBody(
+                  color: DTColors.lightGrey,
+                ),
+              ),
+              onTap: () {
+                BlocProvider.of<AuthBloc>(context).add(LogOut(() {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
+                      (route) => false);
+                }));
+              },
+            ),
+          ],
+        ),
+      ),
       body: currentLocation == const LatLng(0, 0)
           ? const Center(child: CircularProgressIndicator())
           : Stack(
@@ -156,29 +235,29 @@ class _HomeScreenState extends State<HomeScreen> {
                     },
                   ),
                 ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: DTButton(
-                    height: 40,
-                    // width: double.infinity,
-                    onPressed: () async {
-                      BlocProvider.of<AuthBloc>(context).add(LogOut(() {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const LoginScreen(),
-                            ),
-                            (route) => false);
-                      }));
-                    },
-                    child: Text(
-                      'Log out',
-                      style: DTTextStyles.regularBody(
-                        color: DTColors.white,
-                      ),
-                    ),
-                  ),
-                ),
+                // Align(
+                //   alignment: Alignment.bottomRight,
+                //   child: DTButton(
+                //     height: 40,
+                //     // width: double.infinity,
+                //     onPressed: () async {
+                //       BlocProvider.of<AuthBloc>(context).add(LogOut(() {
+                //         Navigator.pushAndRemoveUntil(
+                //             context,
+                //             MaterialPageRoute(
+                //               builder: (context) => const LoginScreen(),
+                //             ),
+                //             (route) => false);
+                //       }));
+                //     },
+                //     child: Text(
+                //       'Log out',
+                //       style: DTTextStyles.regularBody(
+                //         color: DTColors.white,
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
@@ -189,7 +268,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       height: 80,
                       width: double.infinity,
-                      color: Colors.blue,
+                      color: DTColors.lightGrey.withOpacity(0.8),
                       child: Center(
                         child: Text(
                           selectedNearbyPlace != null

@@ -40,6 +40,14 @@ class UserStorageRepository {
     });
   }
 
+  Future<String> getDisplayName({
+    required String authId,
+  }) async {
+    final snapshot = await userCollection.doc(authId).get();
+    final body = snapshot.data() as Map<String, dynamic>;
+    return body['username'];
+  }
+
   Future<List<VisitedPlace>> getVisitedPlaces({
     required String authId,
   }) async {
