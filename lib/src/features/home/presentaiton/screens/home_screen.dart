@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:drive_tales/src/design/dt_colors.dart';
 import 'package:drive_tales/src/design/dt_text_styles.dart';
 import 'package:drive_tales/src/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:drive_tales/src/features/authentication/presentation/screens/login_screen.dart';
+import 'package:drive_tales/src/features/map/data/description_repository.dart';
 import 'package:drive_tales/src/features/nearby_places/data/google_places_repository.dart';
 import 'package:drive_tales/src/features/nearby_places/domain/nearby_place.dart';
 import 'package:drive_tales/src/features/storage/data/user_storage_repository.dart';
@@ -35,7 +37,11 @@ class _HomeScreenState extends State<HomeScreen> {
   NearbyPlace? selectedNearbyPlace;
 
   String? _mapStyle;
+
   bool placeInProgress = false;
+
+  DescriptionRepository descriptionRepository = DescriptionRepository();
+  AudioPlayer? audioPlayer;
 
   @override
   void initState() {
@@ -62,10 +68,18 @@ class _HomeScreenState extends State<HomeScreen> {
             sessionVisited.add(selectedNearbyPlace!);
           });
 
+          if (audioPlayer != null) {
+            audioPlayer!.stop();
+          }
+          audioPlayer = AudioPlayer();
+          await descriptionRepository.play(
+              audioPlayer: audioPlayer!,
+              name: '${selectedNearbyPlace!.name}, ${selectedNearbyPlace!.vicinity}',
+              type: DescriptionType.none);
           await UserStorageRepository().addVisitedPlace(authId: userId, place: selectedNearbyPlace!);
         }
 
-        await Future.delayed(const Duration(seconds: 10));
+        await Future.delayed(const Duration(seconds: 15));
         setState(() {
           selectedNearbyPlace = null;
         });
@@ -117,6 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+// <<<<<<< HEAD
       appBar: AppBar(
         backgroundColor: DTColors.navyBlue.withOpacity(0.8),
         shadowColor: Colors.transparent,
@@ -198,6 +213,16 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+// =======
+//       floatingActionButton: FloatingActionButton(onPressed: () {
+//         if (audioPlayer != null) {
+//           audioPlayer!.stop();
+//         }
+//         audioPlayer = AudioPlayer();
+//         descriptionRepository.play(
+//             audioPlayer: audioPlayer!, name: "Podul de Fier din Lugoj", type: DescriptionType.historical);
+//       }),
+// >>>>>>> master
       body: currentLocation == const LatLng(0, 0)
           ? const Center(child: CircularProgressIndicator())
           : Stack(
