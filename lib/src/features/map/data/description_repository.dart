@@ -10,6 +10,7 @@ enum DescriptionType {
   financial,
   geographic,
   none,
+  _,
 }
 
 extension DescriptionTypeExtension on DescriptionType {
@@ -24,6 +25,7 @@ extension DescriptionTypeExtension on DescriptionType {
       case DescriptionType.geographic:
         return 'geographic';
       case DescriptionType.none:
+      case DescriptionType._:
         return '';
     }
   }
